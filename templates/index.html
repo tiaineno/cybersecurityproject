@@ -1,0 +1,20 @@
+<h1>All Blogs</h1>
+{% if user.is_authenticated %}
+  <p>Welcome, {{ user.username }}! <a href="/logout/">Logout</a></p>
+  <a href="/blog/create/">Create New Blog</a> 
+{% else %}
+  <p><a href="/login/">Login</a> | <a href="/register/">Register</a></p>
+{% endif %}
+
+<form method="get" action="/search/">
+  <input type="text" name="q" placeholder="Search blogs..." value="{{ query|default:'' }}">
+  <button type="submit">Search</button>
+</form>
+
+<ul>
+  {% for blog in blogs %}
+    <li>
+      <a href="/blog/{{ blog.id }}/">{{ blog.title }}</a> by {{ blog.author.username }}
+    </li>
+  {% endfor %}
+</ul>

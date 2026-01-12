@@ -1,0 +1,33 @@
+<h2>{{ blog.title }}</h2>
+<p>By user {{ blog.author.username }}</p>
+<p>{{ blog.content }}</p>
+
+{% if user == blog.author %}
+  <form method="post" action="/blog/{{ blog.id }}/delete/">
+    {% csrf_token %}
+    <button type="submit">Delete Blog</button>
+  </form>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="content" placeholder="Add a comment">
+  <button type="submit">Comment</button>
+</form>
+
+<ul>
+  {% for comment in comments %}
+    <li>
+      {{ comment.content }} - {{ comment.author.username }}
+      <form method="post"
+        action="/blog/{{ blog.id }}/comment/{{ comment.id }}/delete/"
+        style="display:inline;">
+        {% csrf_token %}
+        {# fix: {% if user == comment.author %} #}
+        <button type="submit">Delete</button>
+        {# {% endif %} #}
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<a href="/">Back to all blogs</a>
