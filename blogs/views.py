@@ -55,11 +55,11 @@ def blog_create(request):
 			return redirect('index')
 	return render(request, 'blog_form.html')
 
-#@login_required
+@login_required
 def blog_delete(request, blog_id):
 	blog = get_object_or_404(Blog, id=blog_id)
-	#if request.user != blog.author:
-	#	return redirect('blog_detail', blog_id=blog_id)
+	if request.user != blog.author:
+		return redirect('blog_detail', blog_id=blog_id)
 	if request.method == 'POST':
 		blog.delete()
 		return redirect('index')
