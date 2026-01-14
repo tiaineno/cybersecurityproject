@@ -24,11 +24,8 @@ def search(request):
 
 	with connection.cursor() as cursor:
 		sql = f"""
-            SELECT b.id, b.title, b.content, u.username 
-            FROM blogs_blog b 
-            JOIN auth_user u ON b.author_id = u.id 
-            WHERE b.title LIKE '%{query}%' OR b.content LIKE '%{query}%' 
-            ORDER BY b.created_at DESC
+            SELECT b.id, b.title, b.content, u.username FROM blogs_blog b JOIN auth_user u ON b.author_id = u.id 
+            WHERE b.title LIKE '%{query}%' OR b.content LIKE '%{query}%' ORDER BY b.created_at DESC
         """
 		cursor.execute(sql)
 		blogs = cursor.fetchall()
