@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # the last import should be removed if not used
 
-from .models import Blog, Comment
+from .models import Blog, Comment, LoginLog
 
 def index(request):
 	blogs = Blog.objects.all().order_by('-created_at')
@@ -88,8 +88,10 @@ def login_view(request):
 		user = authenticate(request, username=username, password=password)
 		if user:
 			login(request, user)
+			#LoginLog.objects.create(username=username, success=True)
 			return redirect('index')
 		else:
+			#LoginLog.objects.create(username=username, success=False)
 			return render(request, 'login.html', {'error': 'Invalid credentials'})
 	return render(request, 'login.html')
 
