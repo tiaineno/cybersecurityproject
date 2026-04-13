@@ -4,10 +4,18 @@ from django.contrib.auth import login, authenticate, logout
 from django.db import connection
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-# the last import should be removed if not used
 
 from .models import Blog, Comment, LoginLog
+
+
+def get_client_ip(request):
+	"""Get the client's IP address from the request."""
+	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+	if x_forwarded_for:
+		ip = x_forwarded_for.split(',')[0]
+	else:
+		ip = request.META.get('REMOTE_ADDR')
+	return ip
 
 def index(request):
 	blogs = Blog.objects.all().order_by('-created_at')
@@ -86,12 +94,13 @@ def login_view(request):
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 		user = authenticate(request, username=username, password=password)
+		ip_address = get_client_ip(request)
 		if user:
 			login(request, user)
-			#LoginLog.objects.create(username=username, success=True)
+			#LoginLog.objects.create(username=username, success=True, ip_address=ip_address)
 			return redirect('index')
 		else:
-			#LoginLog.objects.create(username=username, success=False)
+			#LoginLog.objects.create(username=username, success=False, ip_address=ip_address)
 			return render(request, 'login.html', {'error': 'Invalid credentials'})
 	return render(request, 'login.html')
 
